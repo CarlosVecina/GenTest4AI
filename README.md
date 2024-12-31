@@ -1,6 +1,3 @@
-# AI API testing
-AI test generator for APIs and agentic workflows
-
 <div align="center">
   <img src="docs/imgs/hornbill.png" alt="Hornbill" width="200"/>
   
