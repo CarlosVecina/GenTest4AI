@@ -1,0 +1,19 @@
+# Python environments
+.python-version
+.venv
+
+# Build and distribution
+dist
+__pycache__
+
+# Environment and configuration
+*.env
+/.coverage
+
+# Project files
+/TODO.md
+
+# System and IDE
+.DS_Store
+.cache/
+.vscode/
