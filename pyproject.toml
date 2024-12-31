@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "ai-api-testing"
 version = "0.1.0"
@@ -6,6 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "loguru>=0.7.3",
+    "pytest>=8.3.4",
 ]
 
 [dependency-groups]
@@ -16,6 +21,10 @@ lint = [
     "ruff>=0.8.4",
     "pre-commit>=4.0.1",
 ]
+
+[tool.hatch.build.targets.wheel]
+packages = ["ai_api_testing"]
+include-metadata = true
 
 [tool.ruff]
 line-length = 120
@@ -38,6 +47,8 @@ ignore = [
     "D104", # ignore missing docstring in public package
     "D105", # ignore missing docstring in magic methods
     "D107", # ignore missing docstring in __init__ methods
+    "Q000", # ignore bad quotes
+    "Q003", # ignore bad quotes
 ]
 
 [tool.ruff.lint.pydocstyle]
