@@ -3,7 +3,7 @@
   
   # 🐦 AI API Testing
   
-  *An intelligent test generator for APIs and AI agent workflows*
+  *AI-powered test generator for APIs and AI agent workflows*
 </div>
 
 ## 🎯 Overview
