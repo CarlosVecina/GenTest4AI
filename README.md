@@ -1,8 +1,8 @@
 <div align="center">
   <img src="docs/imgs/hornbill.png" alt="Hornbill" width="200"/>
-  
+
   # 🐦 AI API Testing
-  
+
   *AI-powered test generator for APIs and AI agent workflows*
 </div>
 
@@ -11,7 +11,7 @@
 AI API Testing is a powerful tool that leverages artificial intelligence to automatically generate, execute and validate test cases for:
 
 - RESTful APIs
-- GraphQL endpoints  
+- GraphQL endpoints
 - AI agent workflows and interactions
 - Multi-agent systems
 
@@ -26,7 +26,7 @@ AI API Testing is a powerful tool that leverages artificial intelligence to auto
 ## 🚀 Getting Started
 
 TBD
-<!-- 
+<!--
 🤖 - AI-powered testing
 🔄 - Automated workflow validation
 📊 - Comprehensive reporting
