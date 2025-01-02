@@ -10,16 +10,18 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "loguru>=0.7.3",
-    "pytest>=8.3.4",
 ]
 
 [dependency-groups]
-# dev dependencies are defined in `pydantic-ai-slim/pyproject.toml` to allow for minimal testing
 lint = [
     "mypy>=1.11.2",
     "pyright>=1.1.388",
     "ruff>=0.8.4",
     "pre-commit>=4.0.1",
+]
+dev = [
+    "fastapi[standard]>=0.115.6",
+    "pytest>=8.3.4",
 ]
 
 [tool.hatch.build.targets.wheel]
