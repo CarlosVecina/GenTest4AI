@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pydantic import BaseModel, Field, ValidationError
 
-from ai_api_testing.agents.api_specs_extractor import APISpecsExtractor
+from ai_api_testing.agents.api_specs.api_specs_extractor import FastAPISpecsExtractor
 
 app = FastAPI()
 
@@ -103,8 +103,9 @@ def test_discover_endpoint_response():
 
 def test_discover_endpoint_response_schema():
     """Test the discover endpoint response schema."""
-    agent = APISpecsExtractor(app=app)
-    endpoints = agent.extract_specs()
+    agent = FastAPISpecsExtractor()
+    endpoints = agent.extract_specs(app=app)
+
     assert len(endpoints) == 1
     assert endpoints[0].request_body is not None
     assert endpoints[0].response_schema is not None
