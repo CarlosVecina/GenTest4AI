@@ -25,6 +25,8 @@ AI API Testing is a powerful tool that leverages artificial intelligence to auto
 
 ## 🚀 Getting Started
 
+WIP - Dummy
+
 ```bash
 ai-api-testing ping
 ```
@@ -33,7 +35,6 @@ ai-api-testing ping
 ai-api-testing extract-specs
 ```
 
-WIP
 
 <!--
 🤖 - AI-powered testing
