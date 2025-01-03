@@ -75,18 +75,18 @@ async def extract_swagger_specs(
     return await SwaggerExtractor().extract_endpoints(url, endpoint_list)
 
 
-async def main():
+async def main(url: str):
     """Main function."""
     app = FastAPI()
 
     deps = Deps(app=app)
     result = await agent_specs_extractor.run(
-        """What is the request body for https://petstore.swagger.io endpoints?
-        Try with the json and if not parse the docs available on https://petstore.swagger.io root path""",
+        f"""What is the request body for {url} endpoints?
+        Try with the json and if not parse the docs available on {url} root path""",
         deps=deps,
     )
     print("Response:", result.data)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(main("https://petstore.swagger.io"))
