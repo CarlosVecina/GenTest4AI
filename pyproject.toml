@@ -11,6 +11,7 @@ requires-python = ">=3.10"
 dependencies = [
     "loguru>=0.7.3",
     "pytest>=8.3.4",
+    "typer>=0.15.1",
 ]
 
 [dependency-groups]
@@ -21,6 +22,9 @@ lint = [
     "ruff>=0.8.4",
     "pre-commit>=4.0.1",
 ]
+
+[project.scripts]
+ai-api-testing = "ai_api_testing.cli.main:app"
 
 [tool.hatch.build.targets.wheel]
 packages = ["ai_api_testing"]
