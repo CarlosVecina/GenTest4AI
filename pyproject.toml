@@ -15,6 +15,7 @@ dependencies = [
     "pydantic-ai>=0.0.16",
     "pydantic-settings>=2.7.1",
     "requests>=2.32.3",
+    "typer>=0.15.1",
 ]
 
 [dependency-groups]
@@ -29,6 +30,9 @@ dev = [
     "ipykernel>=6.29.5",
     "pytest>=8.3.4",
 ]
+
+[project.scripts]
+ai-api-testing = "ai_api_testing.cli.main:app"
 
 [tool.hatch.build.targets.wheel]
 packages = ["ai_api_testing"]

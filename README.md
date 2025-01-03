@@ -25,7 +25,17 @@ AI API Testing is a powerful tool that leverages artificial intelligence to auto
 
 ## 🚀 Getting Started
 
-TBD
+WIP - Dummy
+
+```bash
+ai-api-testing ping
+```
+
+```bash
+ai-api-testing extract-specs
+```
+
+
 <!--
 🤖 - AI-powered testing
 🔄 - Automated workflow validation
