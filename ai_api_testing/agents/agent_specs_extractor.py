@@ -4,10 +4,12 @@ from dataclasses import dataclass
 from fastapi import FastAPI
 from pydantic_settings import BaseSettings
 
-from ai_api_testing.agents.api_specs.api_specs_extractor import (
+from ai_api_testing.agents.api_specs.fastapi_extractor import (
     APIEndpoint,
     FastAPISpecsExtractor,
 )
+from ai_api_testing.agents.api_specs.swagger_extractor import SwaggerExtractor
+from ai_api_testing.utils.logger import logger
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models.openai import OpenAIModel
 
@@ -34,9 +36,12 @@ model = OpenAIModel("gpt-4o-mini", api_key=Settings().OPENAI_API_KEY)
 
 agent_specs_extractor = Agent(
     model,
-    system_prompt=("You are an agent that extracts and analyzes API specifications" "from a FastAPI application."),
+    system_prompt=(
+        "You are an agent that extracts and analyzes API specifications"
+        "from a FastAPI app or from Swagger/OpenAPI specification. First try to find the json one time, and if not parse the docs available on the root path."
+    ),
     deps_type=Deps,
-    retries=0,
+    retries=3,
 )
 
 
@@ -55,12 +60,31 @@ async def extract_fastapi_specs(ctx: RunContext[Deps]) -> list[APIEndpoint]:
     return FastAPISpecsExtractor().extract_specs(app=ctx.deps.app)
 
 
+@agent_specs_extractor.tool
+async def extract_swagger_specs(
+    ctx: RunContext[Deps], url: str, endpoint_list: list[str] | None = None
+) -> list[APIEndpoint]:
+    """Extract the API specifications from a Swagger/OpenAPI specification.
+
+    Args:
+        ctx: The context.
+        url: The URL of the Swagger/OpenAPI specification.
+        endpoint_list: The list of endpoints to extract. If None, all endpoints are extracted.
+    """
+    logger.info(f"Extracting Swagger/OpenAPI specification from {url}, endpoint_list: {endpoint_list}")
+    return await SwaggerExtractor().extract_endpoints(url, endpoint_list)
+
+
 async def main():
     """Main function."""
     app = FastAPI()
 
     deps = Deps(app=app)
-    result = await agent_specs_extractor.run("What is the request body for the /predict endpoint?", deps=deps)
+    result = await agent_specs_extractor.run(
+        """What is the request body for https://petstore.swagger.io endpoints?
+        Try with the json and if not parse the docs available on https://petstore.swagger.io root path""",
+        deps=deps,
+    )
     print("Response:", result.data)
 
 

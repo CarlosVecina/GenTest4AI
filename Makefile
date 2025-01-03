@@ -20,3 +20,7 @@ format:
 lint:
 	uv run ruff format --check
 	uv run ruff check
+
+.PHONY: install-chronium
+install-chronium:
+	uv run playwright install chromium
