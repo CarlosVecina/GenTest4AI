@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pydantic import BaseModel, Field, ValidationError
 
-from ai_api_testing.agents.api_specs.api_specs_extractor import FastAPISpecsExtractor
+from ai_api_testing.agents.api_specs.fastapi_extractor import FastAPISpecsExtractor
 
 app = FastAPI()
 
