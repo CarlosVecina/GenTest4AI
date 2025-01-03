@@ -2,7 +2,7 @@ import asyncio
 import json
 from typing import Any
 
-import requests
+import aiohttp
 import yaml
 from pydantic import BaseModel
 
@@ -25,14 +25,14 @@ class SwaggerExtractor(BaseModel):
         Returns:
             List of APIEndpoint objects containing endpoint information
         """
-        if self._try_direct_spec_access(url):
+        if await self._try_direct_spec_access(url):
             logger.info("Direct access successful, reading the JSON/YAML spec")
             return self._parse_spec(endpoint_list)
 
         logger.info("Direct access failed, trying scraping")
-        await self._scrape_and_parse_spec(url, endpoint_list)
+        return await self._scrape_and_parse_spec(url, endpoint_list)
 
-    def _try_direct_spec_access(self, url: str) -> bool:
+    async def _try_direct_spec_access(self, url: str) -> bool:
         """Try to directly access OpenAPI spec from common paths."""
         common_paths = [
             "",  # Original URL might be direct
@@ -43,28 +43,32 @@ class SwaggerExtractor(BaseModel):
             "/swagger/v1/swagger.json",
         ]
 
-        for path in common_paths:
-            try:
-                full_url = f"{url.rstrip('/')}{path}"
-                response = requests.get(full_url)
-                if response.status_code == 200:
-                    try:
-                        self._spec = response.json()
-                        return True
-                    except json.JSONDecodeError:
-                        try:
-                            self._spec = yaml.safe_load(response.text)
-                            return True
-                        except yaml.YAMLError:
-                            continue
-            except requests.RequestException:
-                continue
+        async with aiohttp.ClientSession() as session:
+            for path in common_paths:
+                try:
+                    full_url = f"{url.rstrip('/')}{path}"
+                    async with session.get(full_url) as response:
+                        if response.status == 200:
+                            try:
+                                self._spec = await response.json()
+                                return True
+                            except json.JSONDecodeError:
+                                try:
+                                    text = await response.text()
+                                    self._spec = yaml.safe_load(text)
+                                    return True
+                                except yaml.YAMLError:
+                                    continue
+                except aiohttp.ClientError:
+                    continue
         return False
 
     def _parse_spec(self, endpoint_list: list[str] | None = None) -> list[APIEndpoint]:
         """Parse loaded OpenAPI spec into endpoints."""
         if not self._spec:
             raise ValueError("No OpenAPI specification loaded")
+
+        logger.info("Parsing specs")
 
         paths: dict[str, dict[str, Any]] = self._spec.get("paths", {})
 
@@ -218,6 +222,6 @@ class SwaggerExtractor(BaseModel):
 if __name__ == "__main__":
     extractor = SwaggerExtractor()
     endpoints = asyncio.run(
-        extractor.extract_endpoints("https://petstore.swagger.io/v2/swagger.json")
+        extractor.extract_endpoints("https://petstore.swagger.io")  # /v2/swagger.json")
     )  # , endpoint_list=["fail","/pet/findByStatus"])
     print(endpoints)

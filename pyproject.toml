@@ -9,12 +9,12 @@ description = "🐦AI test generator for APIs and agentic workflows"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "aiohttp>=3.11.11",
     "beautifulsoup4>=4.12.3",
     "loguru>=0.7.3",
     "playwright>=1.49.1",
     "pydantic-ai>=0.0.16",
     "pydantic-settings>=2.7.1",
-    "requests>=2.32.3",
     "typer>=0.15.1",
 ]
 
