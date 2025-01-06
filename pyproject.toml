@@ -9,30 +9,18 @@ description = "🐦AI test generator for APIs and agentic workflows"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "aiohttp>=3.11.11",
-    "beautifulsoup4>=4.12.3",
     "loguru>=0.7.3",
-    "playwright>=1.49.1",
-    "pydantic-ai>=0.0.16",
-    "pydantic-settings>=2.7.1",
+    "pytest>=8.3.4",
     "typer>=0.15.1",
 ]
 
 [dependency-groups]
+# dev dependencies are defined in `pydantic-ai-slim/pyproject.toml` to allow for minimal testing
 lint = [
     "mypy>=1.11.2",
     "pyright>=1.1.388",
     "ruff>=0.8.4",
     "pre-commit>=4.0.1",
-]
-dev = [
-    "ipykernel>=6.29.5",
-    "pre-commit>=4.0.1",
-    # Testing dependencies
-    "aiounittest>=1.4.2",
-    "fastapi[standard]>=0.115.6",
-    "pytest>=8.3.4",
-    "pytest-mock>=3.14.0",
 ]
 
 [project.scripts]
