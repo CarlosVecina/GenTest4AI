@@ -45,23 +45,37 @@ class SwaggerExtractor(BaseModel):
 
         async with aiohttp.ClientSession() as session:
             for path in common_paths:
+                full_url = f"{url.rstrip('/')}{path}"
+
+                # Handle the request
                 try:
-                    full_url = f"{url.rstrip('/')}{path}"
-                    async with session.get(full_url) as response:
-                        if response.status == 200:
-                            try:
-                                self._spec = await response.json()
-                                return True
-                            except json.JSONDecodeError:
-                                try:
-                                    text = await response.text()
-                                    self._spec = yaml.safe_load(text)
-                                    return True
-                                except yaml.YAMLError:
-                                    continue
+                    response = await session.get(full_url)
                 except aiohttp.ClientError:
                     continue
-        return False
+
+                # Check response status
+                if response.status != 200:
+                    await response.close()
+                    continue
+
+                # Try to parse as JSON
+                try:
+                    self._spec = await response.json()
+                    await response.close()
+                    return True
+                except json.JSONDecodeError:
+                    # If JSON fails, try YAML
+                    try:
+                        text = await response.text()
+                        self._spec = yaml.safe_load(text)
+                        await response.close()
+                        breakpoint()
+                        return True
+                    except yaml.YAMLError:
+                        await response.close()
+                        continue
+
+            return False
 
     def _parse_spec(self, endpoint_list: list[str] | None = None) -> list[APIEndpoint]:
         """Parse loaded OpenAPI spec into endpoints."""

@@ -13,11 +13,13 @@ all: format lint
 
 .PHONY: format
 format:
+	uv sync --group lint
 	uv run ruff format
 	uv run ruff check --fix --fix-only
 
 .PHONY: lint
 lint:
+	uv sync --group lint
 	uv run ruff format --check
 	uv run ruff check
 

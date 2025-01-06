@@ -26,10 +26,13 @@ lint = [
     "pre-commit>=4.0.1",
 ]
 dev = [
-    "fastapi[standard]>=0.115.6",
     "ipykernel>=6.29.5",
+    "pre-commit>=4.0.1",
+    # Testing dependencies
+    "aiounittest>=1.4.2",
+    "fastapi[standard]>=0.115.6",
     "pytest>=8.3.4",
-    "pytest-asyncio>=0.25.1",
+    "pytest-mock>=3.14.0",
 ]
 
 [project.scripts]
