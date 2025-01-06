@@ -102,6 +102,7 @@ def test_parse_spec_with_invalid_spec():
 class TestSwaggerExtractor(AsyncTestCase):
     """Test SwaggerExtractor class."""
 
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     async def test_try_direct_spec_access(self):
         """Test direct access to OpenAPI spec with different response scenarios."""
         simple_openapi_spec = {"paths": {"/test": {"get": {}}}}  # Simple mock spec
@@ -113,6 +114,7 @@ class TestSwaggerExtractor(AsyncTestCase):
         mock_response.json = AsyncMock(return_value=simple_openapi_spec)
         mock_response.__aenter__ = AsyncMock(return_value=mock_response)
         mock_response.__aexit__ = AsyncMock(return_value=None)
+        mock_response.content_type = "application/json"
 
         # Create a mock session
         mock_session = AsyncMock()
@@ -125,6 +127,7 @@ class TestSwaggerExtractor(AsyncTestCase):
             self.assertTrue(result)
             self.assertEqual(extractor._spec, simple_openapi_spec)
 
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     async def test_try_direct_spec_access_parse_failure(self):
         """Test direct access when both JSON and YAML parsing fail."""
         extractor = SwaggerExtractor()
@@ -135,7 +138,7 @@ class TestSwaggerExtractor(AsyncTestCase):
         json_error = json.JSONDecodeError("Expecting value", "<string>", 0)
         mock_response.json.side_effect = json_error
         mock_response.text = AsyncMock(return_value="Invalid YAML content")
-        mock_response.close = AsyncMock()
+        mock_response.close = AsyncMock(return_value=None)
 
         # Create a mock session with context manager methods
         mock_session = AsyncMock()

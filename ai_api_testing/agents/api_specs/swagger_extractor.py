@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import json
 from typing import Any
@@ -15,17 +16,23 @@ class SwaggerExtractor(BaseModel):
 
     _spec: dict | None = None
 
-    async def extract_endpoints(self, url: str, endpoint_list: list[str] | None = None) -> list[APIEndpoint]:
+    async def extract_endpoints(
+        self,
+        url: str,
+        endpoint_list: list[str] | None = None,
+        try_direct_access: bool = True,
+    ) -> list[APIEndpoint]:
         """Extract API endpoints from an OpenAPI documentation URL.
 
         Args:
             url: URL to the OpenAPI documentation
             endpoint_list: List of endpoints to extract. If None, all endpoints are extracted.
+            try_direct_access: If True, try to directly access the OpenAPI spec from common paths.
 
         Returns:
             List of APIEndpoint objects containing endpoint information
         """
-        if await self._try_direct_spec_access(url):
+        if try_direct_access and await self._try_direct_spec_access(url):
             logger.info("Direct access successful, reading the JSON/YAML spec")
             return self._parse_spec(endpoint_list)
 
@@ -48,34 +55,42 @@ class SwaggerExtractor(BaseModel):
                 full_url = f"{url.rstrip('/')}{path}"
 
                 try:
-                    response = await session.get(full_url)
+                    response = await session.get(full_url)  # TODO: fix. It was easier mocking this vs nested context
+                    logger.info(f"Response status: {response.status}")
+                    logger.info(f"Response text: {response.text}")
                 except aiohttp.ClientError as e:
                     logger.error(f"Error fetching {full_url}: {e}")
                     continue
 
                 if response.status != 200:
                     logger.error(f"Received non-200 status code {response.status} from {full_url}")
-                    await response.close()
+                    response.close()
+                    continue
+
+                if response.content_type != "application/json":
+                    logger.info("Content type is not application/json")
+                    response.close()
                     continue
 
                 # Try to parse as JSON
                 try:
+                    logger.info(f"Parsing JSON from {full_url}")
                     self._spec = await response.json()
-                    await response.close()
+                    logger.info(f"Parsed JSON from {full_url}")
+                    response.close()
                     return True
-                except json.JSONDecodeError:
+                except (json.JSONDecodeError, aiohttp.ContentTypeError):
                     # If JSON fails, try YAML
                     try:
                         text = await response.text()
+                        logger.info(f"Parsing YAML from {full_url}")
                         self._spec = yaml.safe_load(text)
-                        await response.close()
-                        breakpoint()
+                        response.close()
                         return True
-                    except yaml.YAMLError as e:
-                        await response.close()
+                    except (yaml.YAMLError, aiohttp.ContentTypeError) as e:
+                        response.close()
                         logger.error(f"Error parsing YAML from {full_url}: {e}")
                         continue
-
             return False
 
     def _parse_spec(self, endpoint_list: list[str] | None = None) -> list[APIEndpoint]:
@@ -116,29 +131,32 @@ class SwaggerExtractor(BaseModel):
 
         async with async_playwright() as p:
             browser = await p.chromium.launch()
-            page = await browser.new_page()
-            await page.goto(url)
+            try:
+                page = await browser.new_page()
+                await page.goto(url)
+                await page.wait_for_selector("#swagger-ui")
+                # Wait a bit more to ensure the spec is fully loaded
+                await page.wait_for_timeout(2000)
 
-            await page.wait_for_selector("#swagger-ui")
-            # Wait a bit more to ensure the spec is fully loaded
-            await page.wait_for_timeout(2000)
+                # Extract the spec from the window object
+                spec_json = await page.evaluate(
+                    """
+                    () => {
+                        const dom = document.querySelector('.swagger-ui')
+                        if (!dom) return null;
+                        // Access the spec from the Swagger UI's Redux store
+                        const specSelectors = window.ui.getState().get('spec').toJS();
+                        return specSelectors.json;
+                    }
+                """
+                )
 
-            # Extract the spec from the window object
-            spec_json = await page.evaluate("""
-                () => {
-                    const dom = document.querySelector('.swagger-ui')
-                    if (!dom) return null;
-                    // Access the spec from the Swagger UI's Redux store
-                    const specSelectors = window.ui.getState().get('spec').toJS();
-                    return specSelectors.json;
-                }
-            """)
+                if spec_json:
+                    self._spec = spec_json
+                    return self._parse_spec(endpoint_list)
 
-            await browser.close()
-
-            if spec_json:
-                self._spec = spec_json
-                return self._parse_spec(endpoint_list)
+            finally:
+                await browser.close()
 
         raise ValueError("Could not extract OpenAPI specification from Swagger UI")
 
@@ -230,8 +248,28 @@ class SwaggerExtractor(BaseModel):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Extract API endpoints from Swagger/OpenAPI spec")
+    parser.add_argument(
+        "--url",
+        default="https://petstore.swagger.io",
+        help="URL to the OpenAPI documentation",
+    )
+    parser.add_argument("--endpoints", nargs="+", help="Optional list of specific endpoints to extract")
+    parser.add_argument(
+        "--try-direct-access",
+        action="store_false",
+        default=False,
+        help="Try direct access to OpenAPI spec before scraping",
+    )
+
+    args = parser.parse_args()
+
     extractor = SwaggerExtractor()
     endpoints = asyncio.run(
-        extractor.extract_endpoints("https://petstore.swagger.io")  # /v2/swagger.json")
-    )  # , endpoint_list=["fail","/pet/findByStatus"])
+        extractor.extract_endpoints(
+            args.url,
+            endpoint_list=args.endpoints,
+            try_direct_access=args.try_direct_access,
+        )
+    )
     print(endpoints)

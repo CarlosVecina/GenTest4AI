@@ -26,3 +26,7 @@ lint:
 .PHONY: install-chronium
 install-chronium:
 	uv run playwright install chromium
+
+.PHONY: local-demo-swagger
+local-demo-swagger:
+	uv run python ai_api_testing/agents/api_specs/swagger_extractor.py --url https://petstore.swagger.io --endpoints /pet/findByStatus
