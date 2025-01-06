@@ -5,7 +5,7 @@ import pytest
 import yaml
 from aiounittest import AsyncTestCase
 
-from ai_api_testing.agents.api_specs.swagger_extractor import SwaggerExtractor
+from ai_api_testing.agents.api_specs_agents.swagger_extractor import SwaggerExtractor
 
 
 @pytest.fixture

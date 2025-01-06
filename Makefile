@@ -29,4 +29,9 @@ install-chronium:
 
 .PHONY: local-demo-swagger
 local-demo-swagger:
-	uv run python ai_api_testing/agents/api_specs/swagger_extractor.py --url https://petstore.swagger.io --endpoints /pet/findByStatus
+	uv run python ai_api_testing/agents/api_specs_agents/swagger_extractor.py --url https://petstore.swagger.io --endpoints /pet/findByStatus
+
+.PHONY: test
+test:
+	uv sync --group dev
+	uv run pytest

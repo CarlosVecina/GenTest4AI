@@ -7,7 +7,7 @@ import aiohttp
 import yaml
 from pydantic import BaseModel
 
-from ai_api_testing.agents.api_specs.base_extractor import APIEndpoint
+from ai_api_testing.agents.api_specs_agents.base_extractor import APIEndpoint
 from ai_api_testing.utils.logger import logger
 
 
