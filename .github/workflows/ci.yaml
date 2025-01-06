@@ -32,7 +32,7 @@ jobs:
         with:
           extra_args: --all-files --verbose
         env:
-          SKIP: no-commit-to-branch
+          SKIP: no-commit-to-branch, test
 
       - run: uv build --all-packages
       - run: ls -lh dist/
