@@ -77,6 +77,10 @@ def test_parse_spec_with_endpoint_list(simple_openapi_spec):
 
     endpoints = extractor._parse_spec(endpoint_list=["/pets"])
     assert len(endpoints) == 2
+    assert endpoints[0].path == "/pets"
+    assert endpoints[0].method == "GET"
+    assert endpoints[1].path == "/pets"
+    assert endpoints[1].method == "POST"
 
     endpoints = extractor._parse_spec(endpoint_list=["/non-existent"])
     assert len(endpoints) == 0
