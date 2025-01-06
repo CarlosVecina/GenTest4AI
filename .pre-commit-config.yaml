@@ -25,3 +25,10 @@ repos:
         types: [python]
         language: system
         pass_filenames: false
+      - id: test
+        name: Test
+        entry: make
+        args: [test]
+        types: [python]
+        language: system
+        pass_filenames: false
