@@ -35,7 +35,7 @@ class SwaggerExtractor(BaseModel):
     async def _try_direct_spec_access(self, url: str) -> bool:
         """Try to directly access OpenAPI spec from common paths."""
         common_paths = [
-            "",  # Original URL might be direct
+            "",
             "/openapi.json",
             "/swagger.json",
             "/api-docs",
@@ -47,14 +47,14 @@ class SwaggerExtractor(BaseModel):
             for path in common_paths:
                 full_url = f"{url.rstrip('/')}{path}"
 
-                # Handle the request
                 try:
                     response = await session.get(full_url)
-                except aiohttp.ClientError:
+                except aiohttp.ClientError as e:
+                    logger.error(f"Error fetching {full_url}: {e}")
                     continue
 
-                # Check response status
                 if response.status != 200:
+                    logger.error(f"Received non-200 status code {response.status} from {full_url}")
                     await response.close()
                     continue
 
@@ -71,8 +71,9 @@ class SwaggerExtractor(BaseModel):
                         await response.close()
                         breakpoint()
                         return True
-                    except yaml.YAMLError:
+                    except yaml.YAMLError as e:
                         await response.close()
+                        logger.error(f"Error parsing YAML from {full_url}: {e}")
                         continue
 
             return False
@@ -118,7 +119,6 @@ class SwaggerExtractor(BaseModel):
             page = await browser.new_page()
             await page.goto(url)
 
-            # Wait for Swagger UI to load and render the spec
             await page.wait_for_selector("#swagger-ui")
             # Wait a bit more to ensure the spec is fully loaded
             await page.wait_for_timeout(2000)
@@ -163,7 +163,6 @@ class SwaggerExtractor(BaseModel):
                         return self._resolve_reference(schema["$ref"])
                     return schema
                 elif param.get("in") == "query":
-                    # Handle query parameters by creating a schema
                     query_params = {}
                     for p in parameters:
                         if p.get("in") == "query":
@@ -172,13 +171,11 @@ class SwaggerExtractor(BaseModel):
                                 "description": p.get("description", ""),
                                 "required": p.get("required", False),
                             }
-                            # Handle array type parameters
                             if p.get("type") == "array":
                                 param_schema["items"] = p.get("items", {})
                             query_params[p["name"]] = param_schema
                     return {"type": "object", "properties": query_params} if query_params else None
                 elif param.get("in") == "formData":
-                    # Handle form data as before
                     form_params = {}
                     for p in parameters:
                         if p.get("in") == "formData":
@@ -208,9 +205,9 @@ class SwaggerExtractor(BaseModel):
             # Handle direct reference
             if "$ref" in resolved:
                 ref_parts = resolved["$ref"].split("/")
-                if ref_parts[1] == "definitions":  # OpenAPI 2.0
+                if ref_parts[1] == "definitions":
                     resolved = self._spec["definitions"][ref_parts[2]].copy()
-                elif ref_parts[1] == "components":  # OpenAPI 3.0
+                elif ref_parts[1] == "components":
                     resolved = self._spec["components"]["schemas"][ref_parts[2]].copy()
 
             # Recursively resolve nested references
@@ -222,7 +219,6 @@ class SwaggerExtractor(BaseModel):
 
             return resolved
 
-        # Start resolution with the initial reference
         parts = ref.split("/")
         if parts[1] == "definitions":  # OpenAPI 2.0
             initial_schema = self._spec["definitions"][parts[2]]
