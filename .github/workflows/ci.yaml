@@ -36,3 +36,17 @@ jobs:
 
       - run: uv build --all-packages
       - run: ls -lh dist/
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --python 3.10 --frozen --group test
+
+      - run: uv run pytest

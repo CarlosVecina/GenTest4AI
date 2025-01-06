@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from ai_api_testing.agents.api_specs.base_extractor import APIEndpoint
+from ai_api_testing.agents.api_specs_agents.base_extractor import APIEndpoint
 
 
 class FastAPISpecsExtractor(BaseModel):

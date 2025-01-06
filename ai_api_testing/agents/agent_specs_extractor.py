@@ -4,11 +4,11 @@ from dataclasses import dataclass
 from fastapi import FastAPI
 from pydantic_settings import BaseSettings
 
-from ai_api_testing.agents.api_specs.fastapi_extractor import (
+from ai_api_testing.agents.api_specs_agents.fastapi_extractor import (
     APIEndpoint,
     FastAPISpecsExtractor,
 )
-from ai_api_testing.agents.api_specs.swagger_extractor import SwaggerExtractor
+from ai_api_testing.agents.api_specs_agents.swagger_extractor import SwaggerExtractor
 from ai_api_testing.utils.logger import logger
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models.openai import OpenAIModel
