@@ -1,7 +1,7 @@
 <div align="center">
   <img src="docs/imgs/hornbill.png" alt="Hornbill" width="200"/>
 
-  # 🐦 AI API Testing
+  # 🐦 GenTest4AI - AI API Testing
 
   *AI-powered test generator for APIs and AI agent workflows*
 </div>
