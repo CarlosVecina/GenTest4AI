@@ -12,6 +12,7 @@ __pycache__
 
 # Project files
 /TODO.md
+/Test_Generator.md
 
 # System and IDE
 .DS_Store
