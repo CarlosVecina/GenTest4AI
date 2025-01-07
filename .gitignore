@@ -13,6 +13,7 @@ __pycache__
 # Project files
 /TODO.md
 /Test_Generator.md
+tmp_*
 
 # System and IDE
 .DS_Store
@@ -21,3 +22,8 @@ __pycache__
 
 # Logs
 *.log
+
+# Cache
+.cache/
+.pytest_cache/
+.ruff_cache/
