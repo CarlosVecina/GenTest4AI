@@ -30,9 +30,10 @@ jobs:
 
       - uses: pre-commit/action@v3.0.0
         with:
-          extra_args: --all-files --verbose --exclude examples/
+          extra_args: --all-files --verbose
         env:
           SKIP: no-commit-to-branch, test
+          RUFF_EXCLUDE: examples/*
 
       - run: uv build --all-packages
       - run: ls -lh dist/
