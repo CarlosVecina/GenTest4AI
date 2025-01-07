@@ -33,6 +33,7 @@ jobs:
           extra_args: --all-files --verbose
         env:
           SKIP: no-commit-to-branch, test
+          RUFF_EXCLUDE: examples/*
 
       - run: uv build --all-packages
       - run: ls -lh dist/
