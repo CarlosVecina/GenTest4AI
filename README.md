@@ -1,10 +1,17 @@
 <div align="center">
   <img src="docs/imgs/hornbill.png" alt="Hornbill" width="200"/>
 
-  # 🐦 GenTest4AI - AI API Testing
+  # 🐦 GenTest4AI - AI scenario simulation
 
-  *AI-powered test generator for APIs and AI agent workflows*
+  *AI-powered test generator for APIs, ML models and AI agent workflows*
+  
 </div>
+
+<br>
+
+**👩‍🔬 From LLM evaluation and counterfactuals to human readable ML explainability.**
+
+<br>
 
 ## 🎯 Overview
 
