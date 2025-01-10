@@ -1,15 +1,18 @@
 <div align="center">
   <img src="docs/imgs/hornbill.png" alt="Hornbill" width="200"/>
 
-  # 🐦 GenTest4AI - AI scenario simulation
+  # 🐦 GenTest4AI: AI scenario simulation
 
   *AI-powered test generator for APIs, ML models and AI agent workflows*
   
+  <kbd style="background-color: #ffffd7">**👩‍🔬 From LLM evaluation and counterfactuals to human readable ML explainability**</kbd>
 </div>
 
 <br>
 
-**👩‍🔬 From LLM evaluation and counterfactuals to human readable ML explainability.**
+
+<!-- > 💡 **👩‍🔬 From LLM evaluation and counterfactuals to human readable ML explainability.** -->
+
 
 <br>
 
