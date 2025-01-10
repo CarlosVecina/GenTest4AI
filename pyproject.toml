@@ -33,6 +33,13 @@ dev = [
     "fastapi[standard]>=0.115.6",
     "pytest>=8.3.4",
     "pytest-mock>=3.14.0",
+    "polars>=1.19.0",
+    "scikit-learn>=1.6.0",
+    "matplotlib>=3.10.0",
+    "shap>=0.46.0",
+    "numpy==2.0",
+    "pyarrow>=18.1.0",
+    "optuna>=4.1.0",
 ]
 
 [project.scripts]
