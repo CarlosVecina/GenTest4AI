@@ -1,16 +1,21 @@
 import asyncio
 import json
 from asyncio import create_task
-from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Generic, TypeVar
 
 from pydantic import BaseModel
 
-from ai_api_testing.agents.test_generator_agents.case_family_agent import test_case_family_agent
-from ai_api_testing.agents.test_generator_agents.case_test_generator_agent import test_case_generator_agent
-from ai_api_testing.agents.test_generator_agents.user_persona_modelling_agent import user_modelling_agent
+from ai_api_testing.agents.test_generator_agents.case_family_agent import (
+    test_case_family_agent,
+)
+from ai_api_testing.agents.test_generator_agents.case_test_generator_agent import (
+    test_case_generator_agent,
+)
+from ai_api_testing.agents.test_generator_agents.user_persona_modelling_agent import (
+    user_modelling_agent,
+)
 from ai_api_testing.utils.logger import logger
 from pydantic_ai import Agent
 
@@ -24,12 +29,14 @@ class AgentStatus(Enum):
     FAILED = "failed"
 
 
-@dataclass
-class AgentResult(BaseModel):
+T = TypeVar("T")
+
+
+class AgentResult(BaseModel, Generic[T]):
     """Result of an agent."""
 
     status: AgentStatus
-    data: BaseModel | None = None
+    data: T | list[T] | None = None
     msg: str | None = None
 
 

@@ -12,6 +12,7 @@ dependencies = [
     "aiohttp>=3.11.11",
     "beautifulsoup4>=4.12.3",
     "loguru>=0.7.3",
+    "numpy==2.0",
     "playwright>=1.49.1",
     "pydantic-ai>=0.0.16",
     "pydantic-settings>=2.7.1",
@@ -37,7 +38,6 @@ dev = [
     "scikit-learn>=1.6.0",
     "matplotlib>=3.10.0",
     "shap>=0.46.0",
-    "numpy==2.0",
     "pyarrow>=18.1.0",
     "optuna>=4.1.0",
 ]

@@ -45,7 +45,7 @@ def user_modelling_prompt(ctx: RunContext[UserModellingDeps]) -> str:
     Instructions:
 
     Persona Identification:
-    {"The following users are known to interact with the system: " + ctx.deps.known_users if ctx.deps is not None else ''}
+    {"The following users are known to interact with the system: " + ctx.deps.known_users if ctx.deps is not None else ""}
 
     Start with known user types or services that interact with the system.
     Expand the list by identifying adjacent personas or services that share similar goals or operate in overlapping domains.
