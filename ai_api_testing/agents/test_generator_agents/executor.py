@@ -1,3 +1,4 @@
+import warnings
 from typing import Any, Protocol
 
 import numpy as np
@@ -7,6 +8,9 @@ from ai_api_testing.agents.test_generator_agents.case_test_generator_agent impor
     TestCase,
 )
 from ai_api_testing.agents.test_generator_agents.orchestrator import AgentResult
+
+# TODO: decide if include pandas/polars/NamedArrays...
+warnings.filterwarnings("ignore", category=UserWarning, module="sklearn")
 
 
 class Predictable(Protocol):
@@ -38,11 +42,18 @@ class Executor(BaseModel):
 
     def execute_results(
         self,
-        results_dict: dict[str, AgentResult[TestCase]],
+        results_dict: dict[str, AgentResult[TestCase]] | list[TestCase],
         model: Any,
         predict_proba: bool = False,
     ) -> dict[str, int | float]:
         executor_output = {}
+
+        if isinstance(results_dict, list):
+            try:
+                for testcase in results_dict:
+                    executor_output[str(testcase.input_json)] = self.execute(testcase, model, predict_proba)
+            except AttributeError:
+                print("Wrong output input_json")
         try:
             for _, result in results_dict.items():
                 for testcase in result.data:

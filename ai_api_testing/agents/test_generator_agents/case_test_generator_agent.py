@@ -23,12 +23,17 @@ class TestCase(BaseModel):
     preconditions: str | None = Field(description="Any relevant preconditions for the test case")
 
 
-test_case_generator_agent = Agent(
-    "openai:gpt-4o-mini",
-    name="test_case_generator_agent",
-    retries=1,
-    result_type=list[TestCase],
-)
+def create_test_case_generator_agent(name: str) -> Agent:
+    """Create a test case generator agent."""
+    return Agent(
+        "openai:gpt-4o-mini",
+        name=name,
+        retries=1,
+        result_type=list[TestCase],
+    )
+
+
+test_case_generator_agent = create_test_case_generator_agent("test_case_generator_agent")
 
 
 @dataclass

@@ -14,12 +14,17 @@ class TestCaseFamily(BaseModel):
     test_variations: list[str] = Field(description="The variations of the test case family")
 
 
-test_case_family_agent = Agent(
-    "openai:gpt-4o-mini",
-    name="test_case_family_agent",
-    retries=1,
-    result_type=list[TestCaseFamily],
-)
+def create_test_case_family_agent(name: str) -> Agent:
+    """Create a test case family agent."""
+    return Agent(
+        "openai:gpt-4o-mini",
+        name=name,
+        retries=1,
+        result_type=list[TestCaseFamily],
+    )
+
+
+test_case_family_agent = create_test_case_family_agent("test_case_family_agent")
 
 
 @dataclass
