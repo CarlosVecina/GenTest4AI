@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from pydantic import BaseModel, Field
 
-from ai_api_testing.agents.promp_templates.general_API.api_family_prompt import (
+from ai_api_testing.agents.test_generator_agents.promp_templates.general_API.api_family_prompt import (
     API_FAMILY_PROMPT,
 )
 from pydantic_ai import Agent, RunContext
