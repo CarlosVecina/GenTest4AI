@@ -4,9 +4,7 @@ from typing import Any, Protocol
 import numpy as np
 from pydantic import BaseModel
 
-from ai_api_testing.agents.test_generator_agents.case_test_generator_agent import (
-    TestCase,
-)
+from ai_api_testing.core.models import TestCase
 from ai_api_testing.agents.test_generator_agents.orchestrator import AgentResult
 
 # TODO: decide if include pandas/polars/NamedArrays...

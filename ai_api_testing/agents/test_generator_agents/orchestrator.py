@@ -8,10 +8,10 @@ from typing import Any, Generic, TypeVar
 from pydantic import BaseModel
 
 from ai_api_testing.agents.test_generator_agents.case_family_agent import (
-    test_case_family_agent,
+    default_test_case_family_agent,
 )
 from ai_api_testing.agents.test_generator_agents.case_test_generator_agent import (
-    test_case_generator_agent,
+    default_test_case_generator_agent,
 )
 from ai_api_testing.agents.test_generator_agents.user_persona_modelling_agent import (
     user_modelling_agent,
@@ -220,11 +220,11 @@ if __name__ == "__main__":
                 {"user_prompt": "Generate test cases for API spec: " + str(dummy_api_spec)},
             ),
             (
-                test_case_family_agent,
+                default_test_case_family_agent,
                 {"user_prompt": "Generate the test case families for this user persona: "},
             ),
             (
-                test_case_generator_agent,
+                default_test_case_generator_agent,
                 {"user_prompt": "Expand the test case family of tests: "},
             ),
         ]
