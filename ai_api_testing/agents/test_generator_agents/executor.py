@@ -4,8 +4,8 @@ from typing import Any, Protocol
 import numpy as np
 from pydantic import BaseModel
 
-from ai_api_testing.core.models import TestCase
 from ai_api_testing.agents.test_generator_agents.orchestrator import AgentResult
+from ai_api_testing.core.models import TestCase
 
 # TODO: decide if include pandas/polars/NamedArrays...
 warnings.filterwarnings("ignore", category=UserWarning, module="sklearn")
